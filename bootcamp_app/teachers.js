@@ -8,7 +8,10 @@ const pool = new Pool({
 });
 
 // Command Line Arguments
-const args = process.argv.slice(2);
+// Command Line Arguments
+const cohortName = process.argv[2] || 'JUL02';
+// Store all potentially malicious values in an array.
+const values = [cohortName];
 
 // QUERY THE DATABASE
 pool.query(`
@@ -17,8 +20,8 @@ FROM teachers
 JOIN assistance_requests ON teacher_id = teachers.id
 JOIN students ON student_id = students.id
 JOIN cohorts ON cohort_id = cohorts.id
-WHERE cohorts.name = '${args[0] || 'JUL02'}'
-ORDER BY teacher;`)
+WHERE cohorts.name = $1
+ORDER BY teacher;`, values)
 .then(res => {
 
   console.log('connected');
